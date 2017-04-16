@@ -116,24 +116,29 @@ LexicalAtom Scan::NextSymbol() // Główna usługa scanera
 			{ 
 				l = l*10 + (current_char-'0');
 				Nextc();
-				/**if (current_char == '.') //real.
+				if (current_char == '.') //real.
 				{
-					double lr = 0.0;
-					double additional = 0.0;
-					int num_after_dot = 1;
+					double whole_double = l;
+					double one_char_double = 0;
+					int num_of_zeroes_after_dot = 1;
 					Nextc();
-					do 
+					if (!(isdigit(current_char))) //error: incomplete char 
+						return unidentSymbol;
+					while (isdigit(current_char))
 					{
-						for (int i = 0; i < num_after_dot; ++i)
-							lr = lr + (current_char - '0') / 10;
-						lr = lr + (current_char - '0') / 10;
+						one_char_double = current_char - '0';
+						for (int i = 0; i < num_of_zeroes_after_dot; ++i)
+							one_char_double = one_char_double / 10;
+						num_of_zeroes_after_dot += 1;
+						whole_double += one_char_double;
 						Nextc();
-
-					} while (isdigit(current_char));
-					last_float_constant = (float)l;
-
+					}
+					last_float_constant = whole_double;
+					cout << "(" << last_float_constant;
 					return RealLit;
-				};*/
+				};
+
+
 			} while (isdigit(current_char));
 			last_int_constant = (int)l;
 			cout << "(" << last_int_constant << " ";
