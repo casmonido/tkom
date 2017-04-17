@@ -27,14 +27,13 @@ Source::~Source()
 	delete [] file_name;
 }
 
-void Source::Error(int ec, const TextPos&tp, const char*mt="", const char*at="")
+void Source::Error(int error_number, const TextPos& atom_position, const char* txt_atom)
 { 
 	total_error_number++;
 	cout << setw(5) << current_position_in_file.line_number << ' ' << current_line_buffer;
 	number_of_errors_in_line = 1;
-	cout << setw(2) << ec << "*** ";
-	cout<<setw(tp.ascii_char_number)<<setfill('-') <<'^' <<setfill(' ') <<mt <<at <<'\n';
-	total_error_number = number_of_errors_in_line = 0;
+	cout << setw(2) << error_number << "*** ";
+	cout << setw(atom_position.ascii_char_number) << setfill('-') <<'^' << setfill(' ') << txt_atom <<'\n';
 }
 
 int Source::NextChar()

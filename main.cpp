@@ -98,7 +98,7 @@ int main()
 			case strKw:
 						cout << "String ";
 						break;
-			case isOp:
+			case colon:
 						cout << ": ";
 						break;
 			case namspOp:
@@ -140,10 +140,10 @@ int main()
 			case geOp:
 						cout << ">= ";
 						break;
-			case addOp:
+			case plusOp:
 						cout << "+ ";
 						break;
-			case subtrOp:
+			case minusOp:
 						cout << "- ";
 						break;
 			case multOp:
@@ -152,7 +152,7 @@ int main()
 			case divOp:
 						cout << "/ ";
 						break;
-			case dotOp:
+			case dot:
 						cout << ".";
 						break;
 			case andOp:
@@ -160,9 +160,6 @@ int main()
 						break;
 			case orOp:
 						cout << "or ";
-						break;
-			case assignOp:
-						cout << ":= ";
 						break;
 			case simpleName:
 						cout << ":simpleName) ";

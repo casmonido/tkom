@@ -25,7 +25,7 @@ class Source
 public:
 	Source(const char *file);
 	~Source();
-	void Error(int ec,const TextPos&tp, const char*mt,const char*at);
+	void Error(int error_number, const TextPos& atom_position, const char* txt_atom);
 	int NextChar();
 	const TextPos& GetPos() const { return current_position_in_file; }
 };
