@@ -2,10 +2,7 @@
 #define SOURCE
 
 
-#define MAXLIN 200//ile znaków w wierszu czy co? 
-
-// Klasa Source.
-// sekcja #include
+#define MAXLIN 200 //how much chars can be in one line  
 
 struct TextPos
 { 

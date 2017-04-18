@@ -30,10 +30,9 @@ Source::~Source()
 void Source::Error(int error_number, const TextPos& atom_position, const char* txt_atom)
 { 
 	total_error_number++;
-	cout << setw(5) << current_position_in_file.line_number << ' ' << current_line_buffer;
-	number_of_errors_in_line = 1;
-	cout << setw(2) << error_number << "*** ";
-	cout << setw(atom_position.ascii_char_number) << setfill('-') <<'^' << setfill(' ') << txt_atom <<'\n';
+	cout << "error in line " << current_position_in_file.line_number << ": " << txt_atom << '\n';
+	cout << "   " << current_line_buffer << "\n";
+	number_of_errors_in_line += 1;
 }
 
 int Source::NextChar()

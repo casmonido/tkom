@@ -7,17 +7,11 @@ int main()
 {
 
 	Source *s = new Source("plik.txt");
-	/**
-	int r = 0;
-	while ((r=s->NextChar()) != EOF)
-		std::cout << r << '\n'; */ 
-
 	Scan *sc = new Scan(*s);
 
 	LexicalAtom la;
 	while((la = sc->NextSymbol())!=endfile)
-	{
-		
+	{/**
 		switch (la)
 		{
 			case trueKw:
@@ -162,20 +156,20 @@ int main()
 						cout << "or ";
 						break;
 			case simpleName:
-						cout << ":simpleName) ";
+						cout << "(" << sc->LastIdentifier() << ":simpleName) ";
 						break;
 			case StringLit:
-						cout << ":StringLit) ";
+						cout << "(" << sc->StringConstant() << ":StringLit) ";
 						break;
 			case IntegerLit:
-						cout << ":IntegerLit) ";
+						cout << "(" << sc->IntConst() << ":IntegerLit) ";
 						break;
 			case RealLit:
-						cout << ":RealLit) ";
+						cout << "(" << sc->FloatConst() << ":RealLit) ";
 						break;
 			default: 
-						cout << "???? ";
-		};
+						cout << "???? "; 
+		}; */
 
 	}
 	delete(sc);

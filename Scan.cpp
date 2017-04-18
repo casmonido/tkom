@@ -7,21 +7,22 @@
 using namespace std;
 
 
-LexicalAtom Scan::NextSymbol() // Główna usługa scanera
-{ 
-	while (isSpace(current_char) || current_char == '-' || current_char == EOF)
-	{
-		if (current_char == EOF) 
-			return endfile;
-		while (isSpace(current_char))
-			Nextc();
-		if (current_char == '-') 
+	LexicalAtom Scan::NextSymbol()
+	{ 
+		// discard whitespaces and comments, but watch out for - operator
+		while (isSpace(current_char) || current_char == '-' || current_char == EOF)
 		{
-			Nextc();
-			if (isdigit(current_char))
-				return scanInteger(-1);
-			else
-				if (current_char == '-') //comment, but it may end in one of two ways
+			if (current_char == EOF) 
+				return endfile;
+			while (isSpace(current_char))
+				Nextc();
+			if (current_char == '-') 
+			{
+				Nextc();
+				if (isdigit(current_char))
+					return scanIntegerOrReal(-1);
+				else
+					if (current_char == '-') // it's a comment, but it may end in one of two ways
 					{
 						while (current_char != '\n' && current_char != EOF)
 							Nextc();
@@ -30,113 +31,221 @@ LexicalAtom Scan::NextSymbol() // Główna usługa scanera
 						else
 							return endfile;
 					}
-				else
-					return minusOp;
-		}
-	};
+					else
+						return minusOp;
+			}
+		};
 
-	atom_position = src.GetPos();
+		atom_position = src.GetPos();
 
-	if (isNameStartChar(current_char))
-		return scanIdentifier();
-	else
-		if (isdigit(current_char))
-			return scanInteger(1);
+		if (isNameStartChar(current_char))
+			return scanIdentifierOrKeyword(); 
 		else
-			switch(current_char)
-			{
-				case '\'':
-						last_string_constant = "";
-						while (1)
-						{
+			if (isdigit(current_char))
+				return scanIntegerOrReal(1);
+			else
+				switch(current_char)
+				{
+					case '\'':
+							return scanStringConst();
+					case '<':
 							Nextc();
-							if (current_char != '\'')
-								last_string_constant += current_char;
-							else
-								break;
-						} 
-						Nextc();
-						cout << "(" << last_string_constant << " ";
-						return StringLit;
-				case '<':
-						Nextc();
-						if (current_char == '=')
-						{
-							Nextc();
-							return leOp;
-						}
-						else
-							if (current_char == '>')
+							if (current_char == '=')
 							{
 								Nextc();
-								return notOp;
+								return leOp;
 							}
 							else
-								return ltOp;
-				case '>':
-						Nextc();
-						if (current_char == '=')
-						{
+								if (current_char == '>')
+								{
+									Nextc();
+									return notOp;
+								}
+								else
+									return ltOp;
+					case '>':
 							Nextc();
-							return geOp;
-						}
-						else
-							return gtOp;
-				case ':':
-						Nextc();
-						if (current_char == ':')
-						{
+							if (current_char == '=')
+							{
+								Nextc();
+								return geOp;
+							}
+							else
+								return gtOp;
+					case ':':
 							Nextc();
-							return namspOp;
-						}
-						return colon;
-				case '(':
-						Nextc();
-						return lparent;
-				case ')':
-						Nextc();
-						return rparent;
-				case '{':
-						Nextc();
-						return lbracket;
-				case '}':
-						Nextc();
-						return rbracket;
-				case ',':
-						Nextc();
-						return comma;
-				case ';':
-						Nextc();
-						return semicol;
-				case '=':
-						Nextc();
-						return eqOp;
-				case '+':
-						Nextc();
-						return plusOp;
-				case '*':
-						Nextc();
-						return multOp;
-				case '/':
-						Nextc();
-						return divOp;
-				case '.':
-						Nextc();
-						return dot;
+							if (current_char == ':')
+							{
+								Nextc();
+								return namspOp;
+							}
+							return colon;
+					case '(':
+							Nextc();
+							return lparent;
+					case ')':
+							Nextc();
+							return rparent;
+					case '{':
+							Nextc();
+							return lbracket;
+					case '}':
+							Nextc();
+							return rbracket;
+					case ',':
+							Nextc();
+							return comma;
+					case ';':
+							Nextc();
+							return semicol;
+					case '=':
+							Nextc();
+							return eqOp;
+					case '+':
+							Nextc();
+							return plusOp;
+					case '*':
+							Nextc();
+							return multOp;
+					case '/':
+							Nextc();
+							return divOp;
+					case '.':
+							Nextc();
+							return dot;
+				}
+		ScanError(UNIDENTIFIED_SYMBOL);
+		return unidentSymbol; 
+	}
+
+
+	void Scan::ScanError(int error_number)
+	{
+		static const char *ScnErr[] = {
+			"Integer out of bounds", // 0
+			//"Possible loss of precision",
+			"Identifier too long - it needs to be up o 20 characters",
+			"Unidentified symbol"
+		};  
+		src.Error(error_number, atom_position, ScnErr[error_number]); 
+	}
+
+
+	bool Scan::isNameStartChar(char cur_char) 
+	{
+		if ((cur_char >= 'A' && cur_char <= 'Z') || (cur_char >= 'a' && cur_char <= 'z'))
+			return true;
+		return false;
+	}
+
+
+	bool Scan::isNameChar(char cur_char) 
+	{
+		if (isNameStartChar(cur_char) || cur_char == '_' || (cur_char > '0' && cur_char < '9')) 
+			return true;
+		return false;
+	}
+
+
+	bool Scan::isSimpleName(char *str, int len)
+	{
+		if (!(isNameStartChar(str[0])))
+			return false;
+		for (int i = 0; i < len; ++i)
+			if (!(isNameChar(str[i])))
+				return false;
+		return true;
+	}
+
+
+	bool Scan::isSpace(char cur_char)
+	{
+		if (current_char == '\n' || current_char == '\t' || current_char == ' ') 
+			return true;
+		return false;
+	}
+
+
+	LexicalAtom Scan::scanIdentifierOrKeyword()
+	{
+		unsigned int len = 0;
+		bool over = false;
+		while (isNameChar(current_char))
+		{ 
+			if (len < MAX_ID_LEN) 
+			{
+				last_identifier[len] = current_char;
+				len++;
 			}
-	return unidentSymbol; 
-}
+			else
+				over = true;
+			Nextc(); //ends just after simplename
+		};
+		last_identifier[len] = '\0';
+		if (over)
+			ScanError(IDENTIFIER_TOO_LONG);
+
+		if (table.find(last_identifier) != table.end())
+			return table.find(last_identifier)->second;
+		else 
+			return simpleName;	
+	}
 
 
+	LexicalAtom Scan::scanReal(long l, int multiplier)
+	{
+		double whole_double = (double) l;
+		double one_char_double = 0;
+		int num_of_zeroes_after_dot = 1;
+		Nextc();
+		if (!(isdigit(current_char))) //error: incomplete real
+		{	
+			ScanError(UNIDENTIFIED_SYMBOL);
+			return unidentSymbol;
+		}
+		while (isdigit(current_char))
+		{
+			one_char_double = current_char - '0';
+			for (int i = 0; i < num_of_zeroes_after_dot; ++i)
+				one_char_double = one_char_double / 10;
+			num_of_zeroes_after_dot += 1;
+			whole_double += one_char_double;
+			Nextc();
+		}
+		last_float_constant = whole_double*multiplier;
+		return RealLit;
+	}
 
-void Scan::ScanError(int error_number)
-{
-	static const char *ScnErr[] = {
-		"Integer out of bounds", // 0
-		//"Possible loss of precision",
-		"Identifier too long - it needs to be up o 20 characters",
-		"Unidentified symbol"
-	};  
-	src.Error(error_number, atom_position, ScnErr[error_number]); 
-}
 
+	LexicalAtom Scan::scanIntegerOrReal(int multiplier)
+	{
+		long l = 0;
+		while (isdigit(current_char))
+		{ 
+			l = l*10 + (current_char-'0');
+			Nextc();
+			if (current_char == '.') //real.
+				return scanReal(l, multiplier);
+		}
+		if (l > INT_MAX)
+			ScanError(INT_OUT_OF_BOUNDS);
+		l *= multiplier;
+		last_int_constant = (int)l;
+		return IntegerLit;
+	}
+
+
+	LexicalAtom Scan::scanStringConst()
+	{
+		last_string_constant = "";
+		while (1)
+		{
+			Nextc();
+			if (current_char != '\'')
+				last_string_constant += current_char;
+			else
+				break;
+		} 
+		Nextc();
+		return StringLit;
+	}
