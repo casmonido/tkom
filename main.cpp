@@ -1,17 +1,25 @@
 #include <iostream>
+#include <cstdlib>
 #include "Source.h"
 #include "Scan.h"
 using namespace std;
 
-int main() 
+int main(int argv, char ** argc) 
 {
-
-	Source *s = new Source("plik.txt");
+	if (argv < 3)
+	{
+		cout << "Przykladowe wywolanie: ./start 1 test1.txt\n";
+		return 1;
+	}
+	int full = atoi(argc[1]);
+	char *file = argc[2];
+	Source *s = new Source(file);
 	Scan *sc = new Scan(*s);
 
 	LexicalAtom la;
 	while((la = sc->NextSymbol())!=endfile)
-	{/**
+	{
+		if (full)
 		switch (la)
 		{
 			case trueKw:
@@ -169,7 +177,7 @@ int main()
 						break;
 			default: 
 						cout << "???? "; 
-		}; */
+		}; 
 
 	}
 	delete(sc);

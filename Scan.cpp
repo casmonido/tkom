@@ -113,8 +113,11 @@ using namespace std;
 					case '.':
 							Nextc();
 							return dot;
+					default:
+							Nextc();
+							ScanError(STRANGE_CHAR);
 				}
-		ScanError(UNIDENTIFIED_SYMBOL);
+		//ScanError(UNIDENTIFIED_SYMBOL);
 		return unidentSymbol; 
 	}
 
@@ -125,7 +128,8 @@ using namespace std;
 			"Integer out of bounds", // 0
 			//"Possible loss of precision",
 			"Identifier too long - it needs to be up o 20 characters",
-			"Unidentified symbol"
+			"Unidentified symbol",
+			"Strange char used"
 		};  
 		src.Error(error_number, atom_position, ScnErr[error_number]); 
 	}

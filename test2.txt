@@ -1,0 +1,8 @@
+true   (false) null if: then else endif transformation }top +-     relation when where primitive domain 
+			enforce::checkonly 
+
+
+simpleNazwa.element = 6*010.43; and 'string ' < 0.93210 >  or <= <> >= null
+---aha i jeszcze komentarz
+
+			query Set Bag Sequence {} Collection / 1,, OrderedSet Boolean Integer Real String ;

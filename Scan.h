@@ -78,7 +78,8 @@ class Scan
 		INT_OUT_OF_BOUNDS,
 		//LOSS_OF_PRECISION, //more like a warning?
 		IDENTIFIER_TOO_LONG,
-		UNIDENTIFIED_SYMBOL
+		UNIDENTIFIED_SYMBOL,
+		STRANGE_CHAR
 	};
 
 	Source& src; 
