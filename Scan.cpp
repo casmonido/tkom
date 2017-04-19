@@ -114,24 +114,26 @@ using namespace std;
 							Nextc();
 							return dot;
 					default:
+							// do not change this order, it will mess up the charater position count 
+							if (current_char < 0)
+								Nextc(); // it is PROBABLY a character encoded on two byes
 							Nextc();
-							ScanError(STRANGE_CHAR);
+							ScanError(STRANGE_CHAR, true); 
 				}
-		//ScanError(UNIDENTIFIED_SYMBOL);
 		return unidentSymbol; 
 	}
 
 
-	void Scan::ScanError(int error_number)
+	void Scan::ScanError(int error_number, bool digraph)
 	{
 		static const char *ScnErr[] = {
 			"Integer out of bounds", // 0
 			//"Possible loss of precision",
 			"Identifier too long - it needs to be up o 20 characters",
-			"Unidentified symbol",
-			"Strange char used"
+			"Incorrect declaration of a real constant", // e.g.: 57.
+			"Unrecognized char used"
 		};  
-		src.Error(error_number, atom_position, ScnErr[error_number]); 
+		src.Error(error_number, atom_position, ScnErr[error_number], digraph); 
 	}
 
 
@@ -196,15 +198,15 @@ using namespace std;
 	}
 
 
-	LexicalAtom Scan::scanReal(long l, int multiplier)
+	LexicalAtom Scan::scanReal(long l, int multiplier, bool over)
 	{
 		double whole_double = (double) l;
 		double one_char_double = 0;
 		int num_of_zeroes_after_dot = 1;
 		Nextc();
-		if (!(isdigit(current_char))) //error: incomplete real
+		if (!(isdigit(current_char)))
 		{	
-			ScanError(UNIDENTIFIED_SYMBOL);
+			ScanError(INCOMPLETE_REAL_CONST);
 			return unidentSymbol;
 		}
 		while (isdigit(current_char))
@@ -216,6 +218,8 @@ using namespace std;
 			whole_double += one_char_double;
 			Nextc();
 		}
+		if (over)
+			ScanError(INT_OUT_OF_BOUNDS); //but i want it to be scanned...
 		last_float_constant = whole_double*multiplier;
 		return RealLit;
 	}
@@ -224,14 +228,17 @@ using namespace std;
 	LexicalAtom Scan::scanIntegerOrReal(int multiplier)
 	{
 		long l = 0;
+		bool over = false;
 		while (isdigit(current_char))
 		{ 
 			l = l*10 + (current_char-'0');
 			Nextc();
+			if (l > INT_MAX)
+				over = true;
 			if (current_char == '.') //real.
-				return scanReal(l, multiplier);
+				return scanReal(l, multiplier, over);
 		}
-		if (l > INT_MAX)
+		if (over)
 			ScanError(INT_OUT_OF_BOUNDS);
 		l *= multiplier;
 		last_int_constant = (int)l;

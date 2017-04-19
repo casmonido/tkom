@@ -1,6 +1,7 @@
 true   (false) null if: then else endif transformation }top +-     relation when where primitive domain 
 			enforce::checkonly 
-
+-12
+-45.81
 
 simpleNazwa.element = 6*010.43; and 'string ' < 0.93210 >  or <= <> >= null
 ---aha i jeszcze komentarz

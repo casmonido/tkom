@@ -78,8 +78,8 @@ class Scan
 		INT_OUT_OF_BOUNDS,
 		//LOSS_OF_PRECISION, //more like a warning?
 		IDENTIFIER_TOO_LONG,
-		UNIDENTIFIED_SYMBOL,
-		STRANGE_CHAR
+		INCOMPLETE_REAL_CONST, 
+		STRANGE_CHAR 
 	};
 
 	Source& src; 
@@ -91,11 +91,15 @@ class Scan
 	std::string last_string_constant;
 	char last_identifier[MAX_ID_LEN+1];
 
-	void Nextc() { current_char=src.NextChar(); }
+	void Nextc() { current_char=src.NextChar(); /**
+		if ((current_char >= 'A' && current_char <= 'Z') || (current_char >= 'a' && current_char <= 'z'))
+			std::cout << (char) current_char; 
+		else std::cout << current_char << " "; */
+	}
 
 public:
 	Scan(Source &s):src(s) { Nextc(); }
-	void ScanError(int error_number);
+	void ScanError(int error_number, bool digraph = false);
 	LexicalAtom NextSymbol(); // main functionality of this class
 
 	int IntConst() { return last_int_constant; }
@@ -109,7 +113,7 @@ public:
 	bool isSpace(char cur_char);
 
 	LexicalAtom scanIdentifierOrKeyword();
-	LexicalAtom scanReal(long l, int multiplier);
+	LexicalAtom scanReal(long l, int multiplier, bool over);
 	LexicalAtom scanIntegerOrReal(int multiplier);
 	LexicalAtom scanStringConst();
 };

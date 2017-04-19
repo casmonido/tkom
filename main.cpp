@@ -175,8 +175,6 @@ int main(int argv, char ** argc)
 			case RealLit:
 						cout << "(" << sc->FloatConst() << ":RealLit) ";
 						break;
-			default: 
-						cout << "???? "; 
 		}; 
 
 	}
