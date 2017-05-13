@@ -31,6 +31,7 @@ enum LexicalAtom
 	MAX_SYMBOL = namspOp - 1
 };
 
+extern std::string atoms[];
 
 struct KeywordTable {
     static std::unordered_map<std::string, LexicalAtom> Initialise()

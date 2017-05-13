@@ -7,6 +7,32 @@
 using namespace std;
 
 
+std::string atoms[MAX_SYMBOL+1] =
+{
+	// keywords, for KeywordTable:
+	"if", "then", "else", "endif", 
+	"Set", "Bag", "Sequence", "Collection", "OrderedSet", 
+	"Boolean", "Integer", "Real", "String", 
+	"domain", "primitive", "enforce", "checkonly",
+	"transfromation", "top", "relation", "query", "when", "where", 
+	"true", "false", 
+	"and", "or", 
+	"null" /*,
+	NUM_OF_KEYWORDS,
+	// the rest (consts, operators): 
+	"EOF", unidentSymbol, 
+	simpleName,
+	StringLit, IntegerLit, RealLit,
+	"(", ")", "{", "}", 
+	":", ",", ";", ".",
+	"=", "<", ">", "<=", "<>", ">=", 
+	"+", "-", "*", "/", 
+	"::", 
+
+	**/
+	//MAX_SYMBOL //
+};
+
 	LexicalAtom Scan::NextSymbol()
 	{ 
 		// discard whitespaces and comments, but watch out for - operator
