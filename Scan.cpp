@@ -115,8 +115,8 @@ using namespace std;
 							return dot;
 					default:
 							// do not change this order, it will mess up the charater position count 
-							if (current_char < 0)
-								Nextc(); // it is PROBABLY a character encoded on two byes
+							while (current_char < 0)
+								Nextc(); // it is PROBABLY a character encoded on two byes //or more? 
 							Nextc();
 							ScanError(STRANGE_CHAR, true); 
 				}

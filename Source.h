@@ -1,7 +1,7 @@
 #ifndef SOURCE
 #define SOURCE
 
-
+#include <stdio.h>
 #define MAXLIN 300 //how much chars can be in one line  
 
 struct TextPos

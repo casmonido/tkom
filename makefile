@@ -2,9 +2,9 @@ CC = g++
 LFLAGS = -Wall
 CFLAGS = -Wall -c -std=c++11
 
-start: Source.o Scan.o main.o
+start: Source.o Scan.o Parser.o main.o
 	$(info ŁĄCZENIE)
-	$(CC) $(LFLAGS) Source.o Scan.o main.o -o start
+	$(CC) $(LFLAGS) Source.o Scan.o Parser.o main.o -o start
 
 main.o: main.cpp
 	$(info KOMPILACJA MAIN.CPP)
@@ -17,6 +17,10 @@ Source.o: Source.cpp Source.h
 Scan.o: Scan.cpp Scan.h
 	$(info KOMPILACJA SCAN.CPP)
 	$(CC) $(CFLAGS) Scan.cpp
+
+Parser.o: Parser.cpp Parser.h
+	$(info KOMPILACJA PARSER.CPP)
+	$(CC) $(CFLAGS) Parser.cpp
 
 clean: 
 	rm *.o
