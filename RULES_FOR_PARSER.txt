@@ -163,38 +163,48 @@
 
 
 
-
-
-
-
-
-<OclExpression> ::=   <simpleName> ‘(‘ <variable> (‘,’ <variable>)* ‘)’
-					| <simpleName> <variable2>
-					| <simpleName> <variable2> ‘:’ <pathName> ‘{‘ [<propertyTemplateList>] ‘}’
-					| <simpleName> <pathName2>
-					| <simpleName> <variable2> ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2>
-					| <simpleName> <variable2> ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2>
-					| <simpleName> <variable2> ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2>
-					| <simpleName> <variable2> ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2>
-					| <simpleName> <variable2> <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2>
-
-					| <IfExp> 
-
-					| <StringLit> | <IntegerLit> | <RealLit> | <BooleanLit> | <NullLit>
-
-					| <StringLit> ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2>
+<OclExpressionPart1> ::= 
+					| <pathName2> <OclExpression2>
+					| <pathName2> ‘.’ <simpleName> <OclExpressionPart1Part1>
 					
-					| <RealLit> <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2>
+					| ‘(‘ <variable> (‘,’ <variable>)* ‘)’ <OclExpression2>
+					| <OclExpression2>
+					| ‘:’ <pathName> ‘{‘ [<propertyTemplateList>] ‘}’ <OclExpression2>
+					| ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2> <OclExpression2>
+					| <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2> <OclExpression2>
 
-					| <IntegerLit> <arytmOp> (<variable> | <intExpr> | <IntegerLit>) <intExpr2>
+
+<OclExpressionPart1Part1> ::= <OclExpression2>
+							| ‘:’ <pathName> ‘{‘ [<propertyTemplateList>] ‘}’ <OclExpression2>
+							| (<concatExpr> | <StringLit> | <variable>) <concatExpr2> <OclExpression2>
+							| <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2> <OclExpression2>
+
+
+							
+<OclExpression> ::=   <simpleName> <OclExpressionPart1>
+					| <IfExp> <OclExpression2>
+					| <BooleanLit> <OclExpression2>
+					| <nullKw> <OclExpression2>
+					| <StringLit> <OclExpressionPart2>
+					| <RealLit> <OclExpressionPart3>
+					| <IntegerLit> <OclExpressionPart4>
+
 					
+<OclExpression2> ::= <relOp> <OclExpression> <OclExpression2>
+					| <relOp> <OclExpression> <boolOp> (<relExp> | <boolExpr>) <boolExpr2> <OclExpression2> | Ɛ
 
-					| <OclExpression> <relOp> <OclExpression>
-					| <OclExpression> <relOp> <OclExpression> <boolOp> (<relExp> | <boolExpr>) <boolExpr2>
-					
+<OclExpressionPart2> ::= ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2> <OclExpression2>
+						| <OclExpression2>
 
 
-<LiteralExp> ::= <StringLit> | <IntegerLit> | <RealLit> | <BooleanLit> | <NullLit>
+<OclExpressionPart3> ::= <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2> <OclExpression2>
+						| <OclExpression2>
+
+<OclExpressionPart4> ::= <arytmOp> (<variable> | <intExpr> | <IntegerLit>) <intExpr2> <OclExpression2>
+						| <OclExpression2>
+
+
+<LiteralExp> ::= <StringLit> | <IntegerLit> | <RealLit> | <BooleanLit> | <nullKw>
 
 <objectTemplate> ::= <simpleName> <variable2> ‘:’ <pathName> ‘{‘ [<propertyTemplateList>] ‘}’
 

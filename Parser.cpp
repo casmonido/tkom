@@ -37,20 +37,62 @@ void Parser::Transformation()
 
 
 /**
- * <OclExpression> ::= <call> | <IfExp> | <LiteralExp> | <variable> | <objectTemplate> | 
- *						<concatExpr> | <realExpr> | <intExpr> | <relExpr> | <boolExpr> | <pathName>
+ * <OclExpression> ::= <simpleName> <OclExpressionPart1> 
+					| <IfExp> <OclExpression2> 
+					| <BooleanLit> <OclExpression2> 
+					| <nullKw> <OclExpression2> 
+					| <StringLit> <OclExpressionPart2> 
+					| <RealLit> <OclExpressionPart3>
+					| <IntegerLit> <OclExpressionPart4>
  */
 bool Parser::OclExpression(Node *n)
 {
 	bool result = true;
 	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol);
-	if (!call(n2) IfExp(n2) ) 
+	if (accept(LexicalAtom::simpleName, n2)) 
 	{
-		delete n2;
-		return false;
+		OclExpressionPart1(n2);
+		n->addChild(n2); 
+		return true;
 	}
-	n->addChild(n2); 
-	return true;
+	if (IfExp(n2)) 
+	{
+		OclExpression2(n2);
+		n->addChild(n2); 
+		return true;
+	}
+	if (BooleanLit(n2)) 
+	{
+		OclExpression2(n2);
+		n->addChild(n2); 
+		return true;
+	}
+	if (accept(LexicalAtom::nullKw, n2))
+	{
+		OclExpression2(n2);
+		n->addChild(n2); 
+		return true;
+	}
+	if (accept(LexicalAtom::StringLit, n2)) 
+	{
+		OclExpressionPart2(n2);
+		n->addChild(n2); 
+		return true;
+	}
+	if (accept(LexicalAtom::RealLit, n2))
+	{
+		OclExpressionPart3(n2);
+		n->addChild(n2); 
+		return true;
+	}
+	if (accept(LexicalAtom::IntegerLit, n2))
+	{
+		OclExpressionPart4(n2);
+		n->addChild(n2); 
+		return true;
+	}
+	delete n2;
+	return false;
 }
 
 
