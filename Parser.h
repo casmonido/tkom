@@ -39,7 +39,7 @@ class Parser
 			parent->addChild(new Node(parent, atom));
 			//std::cout << "zainstalowany " << current_symbol << std::endl;
 		}
-		else
+		//else
 			//std::cout << "otrzymany " << current_symbol << ", oczekuje " << atom << std::endl;
 	};
 
