@@ -29,18 +29,18 @@ class Parser
 		//scn.ScanError(FirstSyntaxError+atom, "Nieoczekiwany current_symbol: ", AT[atom]);
 	}
 
-	void accept(LexicalAtom atom, Node *parent)
+	bool accept(LexicalAtom atom, Node *parent)
 	{ 
 		if (parent == nullptr)
 			SyntaxError(atom);
-		if (current_symbol == atom) 
-		{
-			NextSymbol(); 
-			parent->addChild(new Node(parent, atom));
-			//std::cout << "zainstalowany " << current_symbol << std::endl;
-		}
-		//else
-			//std::cout << "otrzymany " << current_symbol << ", oczekuje " << atom << std::endl;
+		else
+			if (current_symbol == atom) 
+			{
+				NextSymbol(); 
+				parent->addChild(new Node(parent, atom));
+				return true;
+			};
+		return false;
 	};
 
 
@@ -51,7 +51,14 @@ class Parser
 	bool collectionTypeIdentifier(Node *);
 	bool primitiveType(Node *);
 	bool primitiveBool(Node *);
-	void modelDecl(Node *);
+	bool modelDecl(Node *);
+	bool relation(Node *);
+	bool query(Node *);
+	bool when(Node *);
+	bool where(Node *);
+	bool primitiveTypeDomain(Node *);
+	bool IfExp(Node *);
+	bool domain(Node *);
 
 public:
 	Parser(Scan &s): scanner(s)

@@ -1,0 +1,174 @@
+<StringLit> ::= ‘’’ (#x20 - #x7e)* ‘’’
+<BooleanLit> ::= <trueKw> | <falseKw>
+<IntegerLit> ::= [‘-’]( [0-9] )+ 
+<RealLit> ::= [‘-’]( [0-9] )+ ‘.’ ( [0-9] )+ 
+<comment> ::= ‘--’ (#x20 - #x7e)* #x0a
+
+<nameStartChar> ::= [a-z] | [A-Z] 
+<nameChar> ::= <nameStartChar> | [0-9] | ‘_’
+<simpleName> ::= <nameStartChar> <nameChar>*
+
+<atom> ::= ‘keyword’
+<ifKw> ::= ‘if’
+<thenKw> ::= ‘then’
+<elseKw> ::= ‘else’
+<endifKw> ::= ‘endif’
+
+<setKw> ::= ‘Set’
+<bagKw> ::= ‘Bag’ 
+<seqKw> ::= ‘Sequence’ 
+<collKw> ::= ‘Collection’
+<ordsetKw> ::= ‘OrderedSet’
+
+<boolKw> ::= ‘Boolean’ 
+<intKw> ::= ‘Integer’ 
+<realKw> ::= ‘Real’
+<strKw> ::= ‘String’ 
+
+<domKw> ::= ‘domain’
+<domPKw> ::= ‘primitive’ 
+<domEKw> ::= ‘enforce’
+<domCKw> ::= ‘checkonly’
+
+<transKw> ::= ‘transformation’
+<topKw> ::= ‘top’ 
+<relKw> ::= ‘relation’
+<querKw> ::= ‘query’
+<whenKw> ::= ‘when’
+<whereKw> ::= ‘where’
+
+<trueKw> ::= ‘true’
+<falseKw> ::= ‘false;
+<andOp> ::= ‘and’
+<orOp> ::= ‘or’
+<nullKw> ::= ‘null’
+
+<colon> ::= ‘:’
+<namspOp> ::= ‘::’ 
+<lparent> ::= ‘(‘
+<rparent> ::= ‘)’
+<lbracket> ::= ‘{‘
+<rbracket> ::= ‘}’
+<comma> ::= ‘,’
+<semicol> := ‘;’
+
+<plus> ::= ‘+’
+<minus> ::= ‘-’
+<multOp> ::= ‘*’
+<divOp> ::= ‘/’
+<dot> ::= ‘.’
+
+<relOp> ::= '=' | '<' | '>' | '<=' | '<>' | '>='
+
+<boolOp> ::= ‘and’ | ‘or’
+
+<arytmOp> ::= ‘+’ | ‘-’ | '*'
+
+<realOp> ::= ‘+’ | ‘-’ | ‘/’ | ‘*’
+
+<collectionTypeIdentifier> ::= ‘Set’ | ‘Bag’ | ‘Sequence’ | ‘Collection’ | ‘OrderedSet’
+
+<primitiveType> ::= ‘Boolean’ | ‘Integer’ | ‘Real’ | ‘String’ 
+
+<primitiveBool> ::= 'true' | 'false'
+
+
+
+
+<transformation> ::= ‘transformation’ <simpleName> ‘(‘ <modelDecl>‘,’ <modelDecl> ‘)’ ‘{‘ (<relation> | <query>)* ‘}’
+
+<relation> ::= [‘top’] ‘relation’ <simpleName> ‘{‘ <varDeclaration>* (<domain> | <prmitiveTypeDomain>)+ [<when>] [<where>] ‘}’
+
+<query> ::= ‘query’ <simpleName> ‘(‘ [<para> (‘,’ <para>)*] ‘)’‘:’ <type> ‘{‘ (<OclExpression> ‘;’)* ‘}’
+
+<when> ::= ‘when’ ‘{‘ (<OclExpression> ‘;’)* ‘}’
+
+<where> ::= ‘where’ ‘{‘ (<OclExpression> ‘;’)* ‘}’
+
+<primitiveTypeDomain> := ‘primitive’ ‘domain’ <simpleName> ‘:’ <type> ‘;’
+
+<IfExp> ::= ‘if’ ‘(‘ <OclExpression> ‘)’ ‘then’ <OclExpression> [‘else’ <OclExpression>] ‘endif’
+
+<domain> ::= (‘checkonly’ | ‘enforce’) ‘domain’ <simpleName> <objectTemplate> ‘;’
+
+
+
+
+
+
+<concatExpr> ::= <StringLit> ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2>
+				| <variable> ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2>
+
+<concatExpr2> ::= ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2> | Ɛ
+
+
+
+<intExpr> ::= <IntegerLit> <arytmOp> (<variable> | <intExpr> | <IntegerLit>) <intExpr2>
+			| <variable> <arytmOp> (<variable> | <intExpr> | <IntegerLit>) <intExpr2>
+
+<intExpr2> ::= <arytmOp> (<variable> | <intExpr> | <IntegerLit>) <intExpr2> | Ɛ
+
+
+
+<realExpr> ::= <variable> <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2>
+			| <RealLit> <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2>
+
+<realExpr2> ::= <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2> | Ɛ
+
+
+
+<relExpr> ::= <OclExpression> <relOp> <OclExpression> 
+
+
+
+<boolExpr> ::= <OclExpression> <relOp> <OclExpression> <boolOp> (<relExp> | <boolExpr>) <boolExpr2>
+			| <primitiveBool> 
+
+<boolExpr2> ::= <boolOp> (<relExp> | <boolExpr>) <boolExpr2> | Ɛ
+
+
+
+
+
+<modelDecl> ::= <simpleName> ‘:’ <simpleName>
+
+<varDeclaration> ::= <simpleName> (, <simpleName>)* ‘:’ <type> [‘=’ <OclExpression>] ‘;’
+
+<queryCall> ::= <simpleName> ‘(‘ <variable> (‘,’ <variable>)* ‘)’
+
+<relationCall> ::= <simpleName> ‘(‘ <variable> (‘,’ <variable>)* ‘)’
+
+<propertyTemplate> ::= <simpleName> ‘=’ <OclExpression> 
+
+<para> ::= <simpleName> ‘:’ <type> 
+
+
+
+
+
+<pathName> ::= <simpleName> 
+			| (<pathName> ‘::’ <simpleName>)
+
+<EnumLit> ::= <pathName>;
+
+<variable> ::= ( [<pathName> ‘.’] <simpleName> ) | <simpleName>
+
+<type> ::= <pathName> | <collectionType> | <primitiveType>
+
+<collectionType> ::= <collectionTypeIdentifier> ‘(‘ <type> ‘)’
+
+
+
+
+
+<OclExpression> ::= <queryCall> | <relationCall> | <IfExp> | <LiteralExp> | <variable> | <objectTemplate> | 
+					<concatExpr> | <realExpr> | <intExpr> | <relExpr> | <boolExpr> | <EnumLit>
+
+
+<LiteralExp> ::= <StringLit> | <IntegerLit> | <RealLit> | <BooleanLit> | <NullLit>
+
+<objectTemplate> ::= <variable> ‘:’ <pathName> ‘{‘ [<propertyTemplateList>] ‘}’
+
+<propertyTemplateList> ::= <propertyTemplate> (‘,’ <propertyTemplate>)*
+
+

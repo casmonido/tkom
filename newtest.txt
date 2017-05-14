@@ -1,2 +1,6 @@
 transformation X (X:X , X:X)
-{}
+{
+	top relation {}
+	top relation {}
+	query() {}
+}

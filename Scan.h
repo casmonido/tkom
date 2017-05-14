@@ -94,11 +94,7 @@ class Scan
 	std::string last_string_constant;
 	char last_identifier[MAX_ID_LEN+1];
 
-	void Nextc() { current_char=src.NextChar(); /**
-		if ((current_char >= 'A' && current_char <= 'Z') || (current_char >= 'a' && current_char <= 'z'))
-			std::cout << (char) current_char; 
-		else std::cout << current_char << " "; */
-	}
+	void Nextc() { current_char=src.NextChar(); }
 
 public:
 	Scan(Source &s):src(s) { Nextc(); }
@@ -108,7 +104,7 @@ public:
 	int IntConst() { return last_int_constant; }
 	float FloatConst() { return last_float_constant; }
 	std::string StringConstant() { return last_string_constant; }
-	const char* LastIdentifier(){ return last_identifier; }
+	const char* LastIdentifier() { return last_identifier; }
 
 	bool isNameStartChar(char cur_char);
 	bool isNameChar(char cur_char);
