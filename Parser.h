@@ -92,6 +92,14 @@ class Parser
 	bool type(Node *);
 	bool collectionType(Node *);
 
+	bool OclExpressionPart2(Node *);
+	bool OclExpressionPart3(Node *);
+	bool OclExpressionPart1(Node *);
+	bool OclExpression1(Node *);
+	bool OclExpression3(Node *);
+	bool OclExpression2(Node *);
+	bool OclExpressionPrim2(Node *);
+	bool OclExpressionPrim(Node *);
 	bool OclExpression(Node *);
 
 
