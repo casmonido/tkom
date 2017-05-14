@@ -7,16 +7,22 @@
 using namespace std;
 
 
-std::string atoms[NUM_OF_KEYWORDS+1] =
+std::string atoms[NUM_OF_VISIBLE+1] =
 {
 	"if", "then", "else", "endif", 
 	"Set", "Bag", "Sequence", "Collection", "OrderedSet", 
 	"Boolean", "Integer", "Real", "String", 
 	"domain", "primitive", "enforce", "checkonly",
-	"transfromation", "top", "relation", "query", "when", "where", 
+	"transfromation", "top", "relation", "query", "when", "where", //17-22
 	"true", "false", 
 	"and", "or", 
-	"null"
+	"null", //27
+	"", //num_of_kwords
+	"(", ")", "{", "}", //29-32
+	":", ",", ";", ".",
+	"=", "<", ">", "<=", "<>", ">=", 
+	"+", "-", "*", "/", 
+	"::" //47
 };
 
 	LexicalAtom Scan::NextSymbol()

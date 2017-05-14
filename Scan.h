@@ -14,21 +14,23 @@ enum LexicalAtom
 	setKw, bagKw, seqKw, collKw, ordsetKw, 
 	boolKw, intKw, realKw, strKw, 
 	domKw, domPKw, domEKw, domCKw,
-	transKw, topKw, relKw, querKw, whenKw, whereKw, 
+	transKw, topKw, relKw, querKw, whenKw, whereKw, //17-22
 	trueKw, falseKw, 
 	andOp, orOp, 
-	nullKw, 
+	nullKw, //27
 	NUM_OF_KEYWORDS,
 	// the rest (consts, operators): 
-	endfile, unidentSymbol, nonFinalSymbol,
-	simpleName,
-	StringLit, IntegerLit, RealLit,
-	lparent, rparent, lbracket, rbracket, 
+	lparent, rparent, lbracket, rbracket, //29-32
 	colon, comma, semicol, dot,
 	eqOp, ltOp, gtOp, leOp, notOp, geOp, 
 	plusOp, minusOp, multOp, divOp, 
-	namspOp,
-	MAX_SYMBOL = namspOp - 1
+	namspOp, //47
+	NUM_OF_VISIBLE,
+
+	endfile, unidentSymbol, nonFinalSymbol,
+	simpleName, //52
+	StringLit, IntegerLit, RealLit,
+	MAX_SYMBOL = RealLit - 2
 };
 
 extern std::string atoms[];

@@ -9,12 +9,12 @@ void Parser::Transformation() // Transformation = "program" ident ';' Block '.' 
 { 
 	accept(LexicalAtom::transKw, last_open_node);
 	accept(LexicalAtom::simpleName, last_open_node);
-	accept(LexicalAtom::lparent, last_open_node);
+	accept(LexicalAtom::lparent, last_open_node); //
 	modelDecl(last_open_node); 
-	accept(LexicalAtom::comma, last_open_node); 
+	accept(LexicalAtom::comma, last_open_node); //
 	modelDecl(last_open_node);
-	accept(LexicalAtom::rparent, last_open_node);
-	accept(LexicalAtom::lbracket, last_open_node);
+	accept(LexicalAtom::rparent, last_open_node); //
+	accept(LexicalAtom::lbracket, last_open_node); //
 	//while (relation() == true || query() == true)
 	//{}
 	accept(LexicalAtom::rbracket, last_open_node);
@@ -22,9 +22,17 @@ void Parser::Transformation() // Transformation = "program" ident ';' Block '.' 
 	parse_tree->print();
 }
 
-void Parser::modelDecl(Node * n)
+
+/**
+ * <modelDecl> ::= <simpleName> ‘:’ <simpleName>
+ */
+void Parser::modelDecl(Node *n)
 {
-	
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol);
+	n->addChild(n2);
+	accept(LexicalAtom::simpleName, n2);
+	accept(LexicalAtom::colon, n2);
+	accept(LexicalAtom::simpleName, n2);
 }
 
 bool Parser::relOp(Node *n)

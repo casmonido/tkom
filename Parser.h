@@ -19,6 +19,7 @@ class Parser
 
 	void SyntaxError(int expected_atom) 
 	{ 
+		std::cout << "syntax error \n";
 		//scn.ScanError(FirstSyntaxError+atom, "Spodziewany atom: ", AT[atom]);
 		//i powinno przeleciec do expected_atom?
 	}
@@ -36,7 +37,10 @@ class Parser
 		{
 			NextSymbol(); 
 			parent->addChild(new Node(parent, atom));
+			//std::cout << "zainstalowany " << current_symbol << std::endl;
 		}
+		else
+			//std::cout << "otrzymany " << current_symbol << ", oczekuje " << atom << std::endl;
 	};
 
 
@@ -53,7 +57,7 @@ public:
 	Parser(Scan &s): scanner(s)
 	{ 
 		NextSymbol(); // Pobranie 1-go atomu
-		last_open_node = new Node(nullptr, LexicalAtom::transKw); //transKw to nie to głupku
+		last_open_node = new Node(nullptr, LexicalAtom::nonFinalSymbol); 
 		parse_tree = new ParseTree(last_open_node);
 	};
 

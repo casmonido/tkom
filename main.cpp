@@ -7,12 +7,12 @@ using namespace std;
 
 int main(int argv, char ** argc) 
 {
-	if (argv < 3)
+	if (argv < 2)
 	{
-		cout << "Przykladowe wywolanie: ./start 1 test1.txt\n";
+		cout << "Przykladowe wywolanie: ./start newtest.txt\n";
 		return 1;
 	}
-	char *file = argc[2];
+	char *file = argc[1];
 	Source *s = new Source(file);
 	Scan *sc = new Scan(*s);
 	Parser *parser = new Parser(*sc);

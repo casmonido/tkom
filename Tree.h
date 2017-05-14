@@ -46,13 +46,41 @@ class ParseTree {
 
 	void print(std::list<Node*> *collection)
 	{
+		int level_width = 1; //root jest 1
+		int next_level_width = 0;
 		while (!collection->empty())
 		{
+			level_width--;
 			Node *n = collection->front();
 			collection->pop_front();
-			std::cout << atoms[n->atom] << '\t';
-			for (std::list<Node*>::iterator i = n->children.begin(); i != n->children.end(); i++)
-				collection->push_back(*i);
+			if (n->atom == LexicalAtom::endfile) //artificial node to make the tree look nice
+			{
+				std::cout << '\n';
+				delete n;
+			}
+			else
+			{
+				if (n->atom > NUM_OF_VISIBLE)
+					std::cout << "." << '\t';
+				else
+					std::cout << atoms[n->atom] << '\t';
+				for (std::list<Node*>::iterator i = n->children.begin(); i != n->children.end(); i++)
+				{
+					collection->push_back(*i);
+					next_level_width++;
+				}
+			}
+
+			
+			if (level_width == 0)
+			{
+				if (next_level_width == 0)
+					break;
+				level_width = next_level_width;
+				next_level_width = 0;
+				collection->push_front(new Node(nullptr, LexicalAtom::endfile));
+				level_width += 1; // to compensate for that push_back just now
+			}
 		}
 		delete collection;
 	}
