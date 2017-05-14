@@ -13,7 +13,7 @@ class Parser
 
 	void NextSymbol() // Pobranie następnego symbolu
 	{ 
-		current_symbol=scanner.NextSymbol(); 
+		current_symbol = scanner.NextSymbol(); 
 	}
 
 
@@ -31,15 +31,23 @@ class Parser
 	void accept(LexicalAtom atom, Node *parent)
 	{ 
 		if (parent == nullptr)
-			return; //RZUC WYJATEK CZY COS
-		if (current_symbol==atom) 
+			SyntaxError(atom);
+		if (current_symbol == atom) 
 		{
 			NextSymbol(); 
 			parent->addChild(new Node(parent, atom));
 		}
 	};
 
-	void modelDecl();
+
+	bool relOp(Node *);
+	bool boolOp(Node *);
+	bool arytmOp(Node *);
+	bool realOp(Node *);
+	bool collectionTypeIdentifier(Node *);
+	bool primitiveType(Node *);
+	bool primitiveBool(Node *);
+	void modelDecl(Node *);
 
 public:
 	Parser(Scan &s): scanner(s)

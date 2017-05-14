@@ -21,7 +21,7 @@ public:
 
 	Node(Node *p, LexicalAtom a): parent(p), atom(a) 
 	{
-		if (atom < 0)
+		if (atom > NUM_OF_KEYWORDS)
 			open = true;
 		else
 			open = false;

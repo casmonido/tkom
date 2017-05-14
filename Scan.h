@@ -20,7 +20,7 @@ enum LexicalAtom
 	nullKw, 
 	NUM_OF_KEYWORDS,
 	// the rest (consts, operators): 
-	endfile, unidentSymbol, 
+	endfile, unidentSymbol, nonFinalSymbol,
 	simpleName,
 	StringLit, IntegerLit, RealLit,
 	lparent, rparent, lbracket, rbracket, 

@@ -1,0 +1,7 @@
+*.o
+*.h.gch
+Util*
+/kaja*
+WAZNE*
+MP1SCAN.h
+Synchronize*

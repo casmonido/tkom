@@ -7,9 +7,8 @@
 using namespace std;
 
 
-std::string atoms[MAX_SYMBOL+1] =
+std::string atoms[NUM_OF_KEYWORDS+1] =
 {
-	// keywords, for KeywordTable:
 	"if", "then", "else", "endif", 
 	"Set", "Bag", "Sequence", "Collection", "OrderedSet", 
 	"Boolean", "Integer", "Real", "String", 
@@ -17,20 +16,7 @@ std::string atoms[MAX_SYMBOL+1] =
 	"transfromation", "top", "relation", "query", "when", "where", 
 	"true", "false", 
 	"and", "or", 
-	"null" /*,
-	NUM_OF_KEYWORDS,
-	// the rest (consts, operators): 
-	"EOF", unidentSymbol, 
-	simpleName,
-	StringLit, IntegerLit, RealLit,
-	"(", ")", "{", "}", 
-	":", ",", ";", ".",
-	"=", "<", ">", "<=", "<>", ">=", 
-	"+", "-", "*", "/", 
-	"::", 
-
-	**/
-	//MAX_SYMBOL //
+	"null"
 };
 
 	LexicalAtom Scan::NextSymbol()
