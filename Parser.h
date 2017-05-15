@@ -121,7 +121,7 @@ public:
 	{ 
 		NextSymbol(); // Pobranie 1-go atomu
 		last_open_node = new Node(nullptr, LexicalAtom::nonFinalSymbol); 
-		parse_tree = new ParseTree(last_open_node);
+		parse_tree = new ParseTree(last_open_node, &s);
 	};
 
 	~Parser() 

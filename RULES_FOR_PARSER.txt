@@ -91,7 +91,7 @@
 
 <IfExp> ::= ‘if’ ‘(‘ <OclExpression> ‘)’ ‘then’ <OclExpression> [‘else’ <OclExpression>] ‘endif’
 
-<domain> ::= (‘checkonly’ | ‘enforce’) ‘domain’ <simpleName> <objectTemplate> ‘;’
+<domain> ::= (‘checkonly’ | ‘enforce’) ‘domain’ <simpleName> ':' <type> ‘;’
 
 <primitiveTypeDomain> := ‘primitive’ ‘domain’ <simpleName> ‘:’ <type> ‘;’
 
@@ -219,6 +219,9 @@
 
 
 
+<realExpr2> ::= <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2> | Ɛ
+<concatExpr2> ::= ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2> | Ɛ
+<intExpr2> ::= <arytmOp> (<variable> | <intExpr> | <IntegerLit>) <intExpr2> | Ɛ
 
 <OclExpressionPart2> ::=
 	  ‘:’ <pathName> ‘{‘ [<propertyTemplateList>] ‘}’
@@ -234,12 +237,13 @@
 	| ‘-’ (<intExpr> | <IntegerLit>) <intExpr2>
 	| ‘-’ (<realExpr> | <RealLit>) <realExpr2>
 
-	| '*' (<variable> | <intExpr> | <IntegerLit>) <intExpr2>
-	| ‘*’ (<variable> | <realExpr> | <RealLit>) <realExpr2>
+	| '*' (<intExpr> | <IntegerLit>) <intExpr2>
+	| ‘*’ (<realExpr> | <RealLit>) <realExpr2>
+	| ‘*’ <variable> <realExpr2>
+	| '*' <variable> <intExpr2>
 
 	| ‘+’ <variable> <concatExpr2>
-	| ‘+’ <variable> <realExpr2>
+	| ‘+’ <variable> <realExpr2> 
 	| ‘+’ <variable> <intExpr2>
 
 	| Ɛ
-

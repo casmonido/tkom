@@ -736,7 +736,7 @@ bool Parser::modelDecl(Node *n)
 
 
 /**
- * <domain> ::= (‘checkonly’ | ‘enforce’) ‘domain’ <simpleName> <objectTemplate> ‘;’
+ * <domain> ::= (‘checkonly’ | ‘enforce’) ‘domain’ <simpleName> ':' <type> ‘;’
  */
 bool Parser::domain(Node *n)
 {
@@ -750,8 +750,8 @@ bool Parser::domain(Node *n)
 	accept(LexicalAtom::domKw, n2);
 	accept(LexicalAtom::simpleName, n2);
 	
-	objectTemplate(n2);
-
+	accept(LexicalAtom::colon, n2);
+	type(n2);
 	accept(LexicalAtom::semicol, n2);
 	n->addChild(n2); 
 	return true;

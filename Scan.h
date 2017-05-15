@@ -96,6 +96,11 @@ class Scan
 
 	void Nextc() { current_char=src.NextChar(); }
 
+	LexicalAtom scanIdentifierOrKeyword();
+	LexicalAtom scanReal(long l, int multiplier, bool over);
+	LexicalAtom scanIntegerOrReal(int multiplier);
+	LexicalAtom scanStringConst();
+
 public:
 	Scan(Source &s):src(s) { Nextc(); }
 	void ScanError(int error_number, bool digraph = false);
@@ -111,10 +116,6 @@ public:
 	bool isSimpleName(char *str, int len);
 	bool isSpace(char cur_char);
 
-	LexicalAtom scanIdentifierOrKeyword();
-	LexicalAtom scanReal(long l, int multiplier, bool over);
-	LexicalAtom scanIntegerOrReal(int multiplier);
-	LexicalAtom scanStringConst();
 };
 
 #endif

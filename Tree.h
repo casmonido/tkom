@@ -43,6 +43,7 @@ public:
 
 class ParseTree {
 	Node *root;
+	Scan *r;
 
 	void print(std::list<Node*> *collection)
 	{
@@ -61,7 +62,21 @@ class ParseTree {
 			else
 			{
 				if (n->atom > NUM_OF_VISIBLE)
-					std::cout << "." << '\t';
+				{
+					if (n->atom == LexicalAtom::simpleName)
+						std::cout << r->LastIdentifier() << '\t';
+					else
+						if (n->atom == LexicalAtom::StringLit)
+							std::cout << r->StringConstant() << '\t';
+						else
+							if (n->atom == LexicalAtom::IntegerLit)
+								std::cout << r->IntConst() << '\t';
+							else 
+								if (n->atom == LexicalAtom::RealLit)
+									std::cout << r->FloatConst() << '\t';
+								else
+									std::cout << "." << '\t';
+				}
 				else
 					std::cout << atoms[n->atom] << '\t';
 				for (std::list<Node*>::iterator i = n->children.begin(); i != n->children.end(); i++)
@@ -86,7 +101,7 @@ class ParseTree {
 	}
 
 public:
-	ParseTree(Node *r) : root(r) {};
+	ParseTree(Node *r, Scan *rr) : root(r), r(rr) {};
 
 	void delete_tree(Node *n)
 	{
