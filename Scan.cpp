@@ -7,7 +7,7 @@
 using namespace std;
 
 
-std::string atoms[NUM_OF_VISIBLE+1] =
+std::string atoms[MAX_SYMBOL+2] =
 {
 	"if", "then", "else", "endif", 
 	"Set", "Bag", "Sequence", "Collection", "OrderedSet", 
@@ -22,7 +22,10 @@ std::string atoms[NUM_OF_VISIBLE+1] =
 	":", ",", ";", ".",
 	"=", "<", ">", "<=", "<>", ">=", 
 	"+", "-", "*", "/", 
-	"::" //47
+	"::", //47 
+	"", "", "", ""
+	"simpleName", //52
+	"StringLit", "IntegerLit", "RealLit"
 };
 
 	LexicalAtom Scan::NextSymbol()
@@ -142,7 +145,7 @@ std::string atoms[NUM_OF_VISIBLE+1] =
 	}
 
 
-	void Scan::ScanError(int error_number, bool digraph)
+	void Scan::ScanError(int error_number, bool digraph, const char *komunikat)
 	{
 		static const char *ScnErr[] = {
 			"Integer out of bounds", // 0
@@ -151,7 +154,10 @@ std::string atoms[NUM_OF_VISIBLE+1] =
 			"Incorrect declaration of a real constant", // e.g.: 57.
 			"Unrecognized char used"
 		};  
-		src.Error(error_number, atom_position, ScnErr[error_number], digraph); 
+		if (error_number < 4)
+			src.Error(error_number, atom_position, ScnErr[error_number], digraph); 
+		else
+			src.Error(error_number, atom_position, komunikat, digraph); 
 	}
 
 

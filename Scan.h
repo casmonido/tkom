@@ -25,7 +25,7 @@ enum LexicalAtom
 	eqOp, ltOp, gtOp, leOp, notOp, geOp, 
 	plusOp, minusOp, multOp, divOp, 
 	namspOp, //47
-	NUM_OF_VISIBLE,
+	NUM_OF_VISIBLE, //48
 
 	endfile, unidentSymbol, nonFinalSymbol,
 	simpleName, //52
@@ -103,7 +103,7 @@ class Scan
 
 public:
 	Scan(Source &s):src(s) { Nextc(); }
-	void ScanError(int error_number, bool digraph = false);
+	void ScanError(int error_number, bool digraph = false, const char *komunikat=nullptr);
 	LexicalAtom NextSymbol(); // main functionality of this class
 
 	int IntConst() { return last_int_constant; }

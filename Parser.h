@@ -3,6 +3,7 @@
 #include "Scan.h"
 #include "Tree.h"
 #include <list>
+#include <cstring>
 
 
 
@@ -13,6 +14,7 @@ class Parser
 	ParseTree *parse_tree;
 	Node *last_open_node;
 
+
 	void NextSymbol() // Pobranie następnego symbolu
 	{ 
 		current_symbol = scanner.NextSymbol(); 
@@ -21,8 +23,9 @@ class Parser
 
 	void SyntaxError(int expected_atom) 
 	{ 
-		std::cout << "syntax error: expected " << expected_atom << ", got " << current_symbol << std::endl;
-		//scn.ScanError(FirstSyntaxError+atom, "Spodziewany atom: ", AT[atom]);
+
+		scanner.ScanError(expected_atom, false, 
+			("Spodziewany atom: "+atoms[expected_atom]+", otrzymano "+atoms[current_symbol]).c_str());
 	}
 
 	void SyntaxError1(int unexpected_atom) 
@@ -30,7 +33,7 @@ class Parser
 		//scn.ScanError(FirstSyntaxError+atom, "Nieoczekiwany current_symbol: ", AT[atom]);
 	}
 
-	bool accept(LexicalAtom atom, Node *parent)// std::list<LexicalAtom> *skip_symbols=nullptr) 
+	bool accept(LexicalAtom atom, Node *parent, int mode=1)// std::list<LexicalAtom> *skip_symbols=nullptr) 
 	{ 
 		if (parent == nullptr)
 			std::cout << "Dearest, you forgot to pass a parent to a node. I can't ACCEPT that.\n";
@@ -43,13 +46,9 @@ class Parser
 					parent->addChild(new Node(parent, atom));
 				NextSymbol(); 
 				return true;
-			}/**
-			else
-				if (skip_symbols != nullptr) // clearly there are paralell possibilities
-				{
-					skipToOneOfThese(skip_symbols);
-					SyntaxError(atom);
-				}*/
+			};
+		if (mode)
+			SyntaxError(atom);
 		return false;
 	};
 
@@ -74,50 +73,50 @@ class Parser
 	bool primitiveType(Node *);
 	bool BooleanLit(Node *);
 
-	bool relation(Node *, std::list<LexicalAtom> *);
-	bool query(Node *,  std::list<LexicalAtom> *);
-	bool when(Node *);
-	bool where(Node *);
-	bool primitiveTypeDomain(Node *);
-	bool IfExp(Node *);
-	bool domain(Node *);
+	bool relation(Node *, std::list<LexicalAtom> *, int mode=1);
+	bool query(Node *,  std::list<LexicalAtom> *, int mode=1);
+	bool when(Node *, int mode=1);
+	bool where(Node *, int mode=1);
+	bool primitiveTypeDomain(Node *, int mode=1);
+	bool IfExp(Node *, int mode=1);
+	bool domain(Node *, int mode=1);
 
-	bool modelDecl(Node *);
-	bool varDeclaration(Node *);
-	bool call(Node *);
-	bool propertyTemplate(Node *);
-	bool para(Node *);
+	bool modelDecl(Node *, int mode=1);
+	bool varDeclaration(Node *, int mode=1);
+	bool call(Node *, int mode=1);
+	bool propertyTemplate(Node *, int mode=1);
+	bool para(Node *, int mode=1);
 
-	bool pathName(Node *);
-	bool pathName2(Node *);
-	bool variable(Node *);
-	bool variable2(Node *);
-	bool type(Node *);
-	bool collectionType(Node *);
+	bool pathName(Node *, int mode=1);
+	bool pathName2(Node *, int mode=1);
+	bool variable(Node *, int mode=1);
+	bool variable2(Node *, int mode=1);
+	bool type(Node *, int mode=1);
+	bool collectionType(Node *, int mode=1);
 
-	bool OclExpressionPart2(Node *);
-	bool OclExpressionPart3(Node *);
-	bool OclExpressionPart1(Node *);
-	bool OclExpression1(Node *);
-	bool OclExpression3(Node *);
-	bool OclExpression2(Node *);
-	bool OclExpressionPrim2(Node *);
-	bool OclExpressionPrim(Node *);
-	bool OclExpression(Node *);
+	bool OclExpressionPart2(Node *, int mode=1);
+	bool OclExpressionPart3(Node *, int mode=1);
+	bool OclExpressionPart1(Node *, int mode=1);
+	bool OclExpression1(Node *, int mode=1);
+	bool OclExpression3(Node *, int mode=1);
+	bool OclExpression2(Node *, int mode=1);
+	bool OclExpressionPrim2(Node *, int mode=1);
+	bool OclExpressionPrim(Node *, int mode=1);
+	bool OclExpression(Node *, int mode=1);
 
 
-	bool concatExpr(Node *);
-	bool concatExpr2(Node *);
-	bool intExpr(Node *);
-	bool intExpr2(Node *);
-	bool realExpr(Node *);
-	bool realExpr2(Node *);
+	bool concatExpr(Node *, int mode=1);
+	bool concatExpr2(Node *, int mode=1);
+	bool intExpr(Node *, int mode=1);
+	bool intExpr2(Node *, int mode=1);
+	bool realExpr(Node *, int mode=1);
+	bool realExpr2(Node *, int mode=1);
 
-	bool boolExpr2(Node *);
-	bool boolExpr(Node *);
-	bool relExpr(Node *);
-	bool objectTemplate(Node *);
-	bool propertyTemplateList(Node *);
+	bool boolExpr2(Node *, int mode=1);
+	bool boolExpr(Node *, int mode=1);
+	bool relExpr(Node *, int mode=1);
+	bool objectTemplate(Node *, int mode=1);
+	bool propertyTemplateList(Node *, int mode=1);
 
 public:
 	Parser(Scan &s): scanner(s)

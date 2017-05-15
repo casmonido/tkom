@@ -4,7 +4,16 @@ transformation nazwa (X:X , X:X)
 	top relation ClassToTable
 	{
 		cn, prefix: String;
+		 checkonly domain uml c:Class {namespace=p:Package {},
+		 kind='Persistent', name=cn};
+		 enforce domain rdbms t:Table {schema=s:Schema {}, name=cn,
+		 column=cl:Column {name=cn+'_tid', type='NUMBER'},
+		 --key=k:Key {name=cn+'pk', column=cl, kind=’primary’}
+		 };
+		 when {
+		 PackageToSchema(p, s);
+		 }
 	}
 
-	query() {}
+	query nazzzzzzwa() {}
 }
