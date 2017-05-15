@@ -1,5 +1,6 @@
 #include "Parser.h"
 #include <iostream>
+#include <list>
 
 
 /**
@@ -15,9 +16,14 @@ void Parser::Transformation()
 	modelDecl(last_open_node);
 	accept(LexicalAtom::rparent, last_open_node); 
 	accept(LexicalAtom::lbracket, last_open_node); 
+	std::list<LexicalAtom> *skip_list = new std::list<LexicalAtom>();
+	skip_list->push_back(LexicalAtom::querKw); //why i even do this
+	skip_list->push_back(LexicalAtom::topKw);
+	skip_list->push_back(LexicalAtom::relKw);
 	while (relation(last_open_node) == true || query(last_open_node) == true) {};
 	accept(LexicalAtom::rbracket, last_open_node);
 	parse_tree->print();
+	delete skip_list;
 }
 
 
@@ -645,7 +651,7 @@ bool Parser::para(Node *n)
 	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
 	if (!accept(LexicalAtom::simpleName, n2))
 	{
-		delete n2; //no tragedy
+		delete n2; 
 		return false;
 	}
 	accept(LexicalAtom::colon, n2);

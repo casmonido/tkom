@@ -30,23 +30,26 @@ class Parser
 		//scn.ScanError(FirstSyntaxError+atom, "Nieoczekiwany current_symbol: ", AT[atom]);
 	}
 
-	bool accept(LexicalAtom atom, Node *parent, std::list<LexicalAtom> *skip_symbols=nullptr) 
+	bool accept(LexicalAtom atom, Node *parent)// std::list<LexicalAtom> *skip_symbols=nullptr) 
 	{ 
 		if (parent == nullptr)
 			std::cout << "Dearest, you forgot to pass a parent to a node. I can't ACCEPT that.\n";
 		else
 			if (current_symbol == atom) 
 			{
+				if (atom == LexicalAtom::simpleName)
+					parent->addChild(new Node(parent, atom, scanner.LastIdentifier()));
+				else
+					parent->addChild(new Node(parent, atom));
 				NextSymbol(); 
-				parent->addChild(new Node(parent, atom));
 				return true;
-			}
+			}/**
 			else
 				if (skip_symbols != nullptr) // clearly there are paralell possibilities
 				{
 					skipToOneOfThese(skip_symbols);
 					SyntaxError(atom);
-				}
+				}*/
 		return false;
 	};
 
@@ -121,7 +124,7 @@ public:
 	{ 
 		NextSymbol(); // Pobranie 1-go atomu
 		last_open_node = new Node(nullptr, LexicalAtom::nonFinalSymbol); 
-		parse_tree = new ParseTree(last_open_node, &s);
+		parse_tree = new ParseTree(last_open_node);
 	};
 
 	~Parser() 

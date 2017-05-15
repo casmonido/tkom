@@ -1,28 +1,11 @@
-transformation X (X:X , X:X)
+transformation nazwa (X:X , X:X)
 {
+
+	cn, prefix: String;
+	
 	top relation ClassToTable
 	{
-		 cn, prefix: String; --String=OclExpression
-		 checkonly domain uml c:Class {
-			 namespace=p:Package {},
-			 kind='Persistent', name=cn
-		 };
-		 enforce domain rdbms t:Table {
-			 schema=s:Schema {}, 
-			 name=cn,
-			 column=cl:Column {
-				 name=cn+'_tid', 
-				 type='NUMBER'
-			 },
-			 key=k:Key {
-				 name=cn+'_pk', 
-				 column=cl, 
-				 kind=’primary’
-			 }
-		 };
-		 when {
-			 PackageToSchema(p, s);
-		 }
+
 	}
 
 	query() {}

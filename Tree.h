@@ -14,12 +14,13 @@ class Node {
 	friend class ParseTree;
 private:
 	Node *parent;
-	LexicalAtom atom;
 	std::list<Node *> children;
 	bool open; //doesn't have children, isn't one of keywords / operators / other things Scanner could return 
 public:
+	std::string symbol_name;
+	LexicalAtom atom;
 
-	Node(Node *p, LexicalAtom a): parent(p), atom(a) 
+	Node(Node *p, LexicalAtom a, std::string str=""): parent(p), symbol_name(str), atom(a)
 	{
 		if (atom > NUM_OF_KEYWORDS)
 			open = true;
@@ -43,7 +44,6 @@ public:
 
 class ParseTree {
 	Node *root;
-	Scan *r;
 
 	void print(std::list<Node*> *collection)
 	{
@@ -64,16 +64,16 @@ class ParseTree {
 				if (n->atom > NUM_OF_VISIBLE)
 				{
 					if (n->atom == LexicalAtom::simpleName)
-						std::cout << r->LastIdentifier() << '\t';
+						std::cout << n->symbol_name << '\t';
 					else
 						if (n->atom == LexicalAtom::StringLit)
-							std::cout << r->StringConstant() << '\t';
+							std::cout << "r->StringConstant()" << '\t';
 						else
 							if (n->atom == LexicalAtom::IntegerLit)
-								std::cout << r->IntConst() << '\t';
+								std::cout << "r->IntConst()" << '\t';
 							else 
 								if (n->atom == LexicalAtom::RealLit)
-									std::cout << r->FloatConst() << '\t';
+									std::cout << "r->FloatConst()" << '\t';
 								else
 									std::cout << "." << '\t';
 				}
@@ -101,7 +101,7 @@ class ParseTree {
 	}
 
 public:
-	ParseTree(Node *r, Scan *rr) : root(r), r(rr) {};
+	ParseTree(Node *r) : root(r) {};
 
 	void delete_tree(Node *n)
 	{
