@@ -33,7 +33,7 @@ class Parser
 		//scn.ScanError(FirstSyntaxError+atom, "Nieoczekiwany current_symbol: ", AT[atom]);
 	}
 
-	bool accept(LexicalAtom atom, Node *parent, int mode=1)// std::list<LexicalAtom> *skip_symbols=nullptr) 
+	bool accept(LexicalAtom atom, Node *parent, int mode)// std::list<LexicalAtom> *skip_symbols=nullptr) 
 	{ 
 		if (parent == nullptr)
 			std::cout << "Dearest, you forgot to pass a parent to a node. I can't ACCEPT that.\n";
@@ -65,13 +65,13 @@ class Parser
 		}
 	}
 
-	bool relOp(Node *);
-	bool boolOp(Node *);
-	bool arytmOp(Node *);
-	bool realOp(Node *);
-	bool collectionTypeIdentifier(Node *);
-	bool primitiveType(Node *);
-	bool BooleanLit(Node *);
+	bool relOp(Node *, int mode=1);
+	bool boolOp(Node *, int mode=1);
+	bool arytmOp(Node *, int mode=1);
+	bool realOp(Node *, int mode=1);
+	bool collectionTypeIdentifier(Node *, int mode=1);
+	bool primitiveType(Node *, int mode=1);
+	bool BooleanLit(Node *, int mode=1);
 
 	bool relation(Node *, std::list<LexicalAtom> *, int mode=1);
 	bool query(Node *,  std::list<LexicalAtom> *, int mode=1);
