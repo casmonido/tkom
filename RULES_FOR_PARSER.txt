@@ -153,10 +153,10 @@
 
 
 
-<boolExpr> ::= <OclExpression> <relOp> <OclExpression> <boolOp> (<relExp> | <boolExpr>) <boolExpr2>
+<boolExpr> ::= <OclExpression> <relOp> <OclExpression> <boolOp> (<relExpr> | <boolExpr>) <boolExpr2>
 			| <BooleanLit> 
 
-<boolExpr2> ::= <boolOp> (<relExp> | <boolExpr>) <boolExpr2> | Ɛ
+<boolExpr2> ::= <boolOp> (<relExpr> | <boolExpr>) <boolExpr2> | Ɛ
 
 
 
@@ -191,7 +191,7 @@
 
 <OclExpressionPrim2> ::= 
 	  <relOp> <OclExpression> <OclExpressionPrim2>
-	| <boolOp> (<relExp> | <boolExpr>) <boolExpr2> <OclExpressionPrim>
+	| <boolOp> (<relExpr> | <boolExpr>) <boolExpr2> <OclExpressionPrim>
 	| Ɛ
 
 

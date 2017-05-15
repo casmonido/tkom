@@ -21,6 +21,175 @@ void Parser::Transformation()
 }
 
 
+/**
+ * <OclExpressionPart2> ::=
+	  ‘:’ <pathName> ‘{‘ [<propertyTemplateList>] ‘}’
+	| ‘/’ (<variable> | <realExpr> | <RealLit>) <realExpr2>
+ */
+bool Parser::OclExpressionPart2(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (accept(LexicalAtom::colon, n2))
+	{
+		pathName(n2);
+		accept(LexicalAtom::lbracket, n2);
+		propertyTemplateList(n2);
+		accept(LexicalAtom::rbracket, n2);
+	}
+	else 
+		if (accept(LexicalAtom::divOp, n2))
+		{
+			if (!variable(n2))
+				if (!realExpr(n2))
+					accept(LexicalAtom::RealLit, n2);
+			realExpr2(n2);
+		}
+		else 
+		{
+			delete n2; 
+			return false;
+		}
+	n->addChild(n2); 
+	return true;
+}
+
+
+/**
+ * <propertyTemplateList> ::= <propertyTemplate> (‘,’ <propertyTemplate>)*
+ */
+bool Parser::propertyTemplateList(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (!propertyTemplateList(n2))
+	{
+		delete n2; 
+		return false;
+	}
+	while (accept(LexicalAtom::comma, n2))
+		propertyTemplateList(n2);
+	n->addChild(n2); 
+	return true;
+}
+
+
+/**
+ * <variable2> ::= <pathName2> ‘.’ <simpleName> | Ɛ
+ */
+bool Parser::variable2(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol);
+	if (!pathName2(n2)) 
+	{
+		n->addChild(n2); //Ɛ
+		return true;
+	}
+	accept(LexicalAtom::dot, n2);
+	accept(LexicalAtom::simpleName, n2);
+	n->addChild(n2); 
+	return true;
+}
+
+
+/**
+ * <variable> ::= <simpleName> <variable2> 
+ */
+bool Parser::variable(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (!accept(LexicalAtom::simpleName, n2))
+	{
+		delete n2; 
+		return false;
+	}
+	variable2(n2);
+	n->addChild(n2); 
+	return true;
+}
+
+
+/**
+ * <objectTemplate> ::= <simpleName> <variable2> ‘:’ <pathName> ‘{‘ [<propertyTemplateList>] ‘}’ 
+ */
+bool Parser::objectTemplate(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (!accept(LexicalAtom::simpleName, n2))
+	{
+		delete n2; //no tragedy
+		return false;
+	}
+	variable2(n2);
+	accept(LexicalAtom::colon, n2);
+	pathName(n2);
+	accept(LexicalAtom::lbracket, n2);
+	propertyTemplate(n2);
+	accept(LexicalAtom::rbracket, n2);
+	n->addChild(n2); 
+	return true;
+}
+
+
+/**
+ * <relExpr> ::= <OclExpression> <relOp> <OclExpression> 
+ */
+bool Parser::relExpr(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (!OclExpression(n2))
+	{
+		delete n2; //no tragedy
+		return false;
+	}
+	relOp(n2);
+	OclExpression(n2);
+	n->addChild(n2); 
+	return true;
+}
+
+
+/**
+ * <boolExpr2> ::= <boolOp> (<relExpr> | <boolExpr>) <boolExpr2> | Ɛ
+ */
+bool Parser::boolExpr2(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (boolOp(n2))
+	{
+		if (!relExpr(n2))
+			boolExpr(n2);
+		boolExpr2(n2);
+	}
+	n->addChild(n2); //Ɛ
+	return true;
+}
+
+
+/**
+ * <boolExpr> ::= <OclExpression> <relOp> <OclExpression> <boolOp> (<relExpr> | <boolExpr>) <boolExpr2>
+			| <BooleanLit> 
+ */
+bool Parser::boolExpr(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (OclExpression(n2))
+	{
+		relOp(n2);
+		OclExpression(n2);
+		boolOp(n2);
+		if (!relExpr(n2))
+			boolExpr(n2);
+		boolExpr2(n2);
+	}
+	else
+		if (!BooleanLit(n2))
+		{
+			delete n2; 
+			return false;
+		}
+	n->addChild(n2);
+	return true;
+}  
+
 
 /**
  * <realExpr2> ::= <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2> | Ɛ
@@ -59,7 +228,7 @@ bool Parser::realExpr(Node *n)
 		if (accept(LexicalAtom::simpleName, n2))
 		{
 			variable2(n2);
-			accept(LexicalAtom::realOp, n2);
+			realOp(n2);
 			if (!realExpr(n2))
 				if (!accept(LexicalAtom::RealLit, n2))
 					variable(n2);
@@ -112,7 +281,7 @@ bool Parser::intExpr(Node *n)
 		if (accept(LexicalAtom::simpleName, n2))
 		{
 			variable2(n2);
-			accept(LexicalAtom::arytmOp, n2);
+			arytmOp(n2);
 			if (!intExpr(n2))
 				if (!accept(LexicalAtom::IntegerLit, n2))
 					variable(n2);
@@ -325,7 +494,7 @@ bool Parser::OclExpression2(Node *n)
 /**
  * <OclExpressionPrim2> ::= 
 	  <relOp> <OclExpression> <OclExpressionPrim2>
-	| <boolOp> (<relExp> | <boolExpr>) <boolExpr2> <OclExpressionPrim2>
+	| <boolOp> (<relExpr> | <boolExpr>) <boolExpr2> <OclExpressionPrim2>
 	| Ɛ
  */
 bool Parser::OclExpressionPrim2(Node *n)
@@ -339,7 +508,7 @@ bool Parser::OclExpressionPrim2(Node *n)
 	else 
 		if (boolOp(n2))
 		{
-			if (!relExp(n2))
+			if (!relExpr(n2))
 				boolExpr(n2);
 			boolExpr2(n2);
 			OclExpressionPrim(n2);
@@ -381,7 +550,6 @@ bool Parser::OclExpressionPrim(Node *n)
  */
 bool Parser::OclExpression(Node *n)
 {
-	bool result = true;
 	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol);
 	if (accept(LexicalAtom::simpleName, n2)) 
 	{

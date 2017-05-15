@@ -110,6 +110,11 @@ class Parser
 	bool realExpr(Node *);
 	bool realExpr2(Node *);
 
+	bool boolExpr2(Node *);
+	bool boolExpr(Node *);
+	bool relExpr(Node *);
+	bool objectTemplate(Node *);
+	bool propertyTemplateList(Node *);
 
 public:
 	Parser(Scan &s): scanner(s)

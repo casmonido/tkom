@@ -4,6 +4,7 @@
 //powinna byc chyba jedna na poziom
 
 //adderal
+
 class SymbolArrayElement
 {
 	String name;
