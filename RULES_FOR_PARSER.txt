@@ -58,6 +58,8 @@
 <divOp> ::= ‘/’
 <dot> ::= ‘.’
 
+
+
 <relOp> ::= '=' | '<' | '>' | '<=' | '<>' | '>='
 
 <boolOp> ::= ‘and’ | ‘or’
@@ -161,9 +163,10 @@
 
 <LiteralExp> ::= <StringLit> | <IntegerLit> | <RealLit> | <BooleanLit> | <nullKw>
 
+<propertyTemplateList> ::= <propertyTemplate> (‘,’ <propertyTemplate>)*
+
 <objectTemplate> ::= <simpleName> <variable2> ‘:’ <pathName> ‘{‘ [<propertyTemplateList>] ‘}’
 
-<propertyTemplateList> ::= <propertyTemplate> (‘,’ <propertyTemplate>)*
 
 
 
@@ -175,7 +178,7 @@
 <OclExpression> ::= 
 	  <IfExp> <OclExpressionPrim>
 	| <BooleanLit> <OclExpressionPrim>
-	| <NullLit> <OclExpressionPrim>
+	| <nullKw> <OclExpressionPrim>
 	| <StringLit> <OclExpression2> <OclExpressionPrim>
 	| <RealLit> <OclExpression3> <OclExpressionPrim>
 	| <IntegerLit> <OclExpression1> <OclExpressionPrim>
@@ -191,30 +194,52 @@
 	| <boolOp> (<relExp> | <boolExpr>) <boolExpr2> <OclExpressionPrim>
 	| Ɛ
 
+
 <OclExpression2> ::= ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2> | Ɛ
 
 <OclExpression3> ::= <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2> | Ɛ
 
 <OclExpression1> ::= <arytmOp> (<variable> | <intExpr> | <IntegerLit>) <intExpr2> | Ɛ
 
+
 <OclExpressionPart1> ::=
 	  <pathName2> <OclExpressionPart3>
 	| <OclExpressionPart2>
 	| ‘(‘ <variable> (‘,’ <variable>)* ‘)’
 
-<OclExpressionPart2> ::=
-	  ‘:’ <pathName> ‘{‘ [<propertyTemplateList>] ‘}’
-	| ‘+’ <variable> <realExpr2>
-	| ‘+’ (<realExpr> | <RealLit>) <realExpr2>
-	| ‘/’ (<variable> | <realExpr> | <RealLit>) <realExpr2>
-	| ‘+’ (<concatExpr> | <StringLit>) <concatExpr2>
-	| ‘+’ <variable> <concatExpr2>
-	| ‘+’ (<intExpr> | <IntegerLit>) <intExpr2>
-	| ‘+’ <variable> <intExpr2>
-	| (‘-’ | '*') (<variable> | <intExpr> | <IntegerLit>) <intExpr2>
-	| (‘-’ | ‘*’) (<variable> | <realExpr> | <RealLit>) <realExpr2>
-	| Ɛ
 
 <OclExpressionPart3> ::=
 	  ‘.’ <simpleName> <OclExpressionPart2>
 	| Ɛ
+
+
+
+
+
+
+
+
+
+<OclExpressionPart2> ::=
+	  ‘:’ <pathName> ‘{‘ [<propertyTemplateList>] ‘}’
+	| ‘/’ (<variable> | <realExpr> | <RealLit>) <realExpr2>
+
+	| ‘+’ (<realExpr> | <RealLit>) <realExpr2>
+	| ‘+’ (<concatExpr> | <StringLit>) <concatExpr2>
+	| ‘+’ (<intExpr> | <IntegerLit>) <intExpr2>
+
+	| ‘-’ <variable> <intExpr2>
+	| ‘-’ <variable> <realExpr2>
+
+	| ‘-’ (<intExpr> | <IntegerLit>) <intExpr2>
+	| ‘-’ (<realExpr> | <RealLit>) <realExpr2>
+
+	| '*' (<variable> | <intExpr> | <IntegerLit>) <intExpr2>
+	| ‘*’ (<variable> | <realExpr> | <RealLit>) <realExpr2>
+
+	| ‘+’ <variable> <concatExpr2>
+	| ‘+’ <variable> <realExpr2>
+	| ‘+’ <variable> <intExpr2>
+
+	| Ɛ
+

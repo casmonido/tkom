@@ -7,43 +7,55 @@
  */
 void Parser::Transformation() 
 {
-	//std::list<LexicalAtom> *skip_symbols = new std::list<LexicalAtom>();
-	//skip_symbols->push_back(LexicalAtom::simpleName);
 	accept(LexicalAtom::transKw, last_open_node);
-
-	//skip_symbols->clear(); skip_symbols->push_back(LexicalAtom::lparent);
 	accept(LexicalAtom::simpleName, last_open_node);
-
-	//skip_symbols->clear(); skip_symbols->push_back(LexicalAtom::simpleName);
 	accept(LexicalAtom::lparent, last_open_node); 
-
 	modelDecl(last_open_node); 
-	
-	accept(LexicalAtom::comma, last_open_node); //same skip_symbols
-
+	accept(LexicalAtom::comma, last_open_node); 
 	modelDecl(last_open_node);
-
-	//skip_symbols->clear(); skip_symbols->push_back(LexicalAtom::simpleName);
 	accept(LexicalAtom::rparent, last_open_node); 
-
 	accept(LexicalAtom::lbracket, last_open_node); 
-
-	while (relation(last_open_node) == true || query(last_open_node) == true)
-	{}
+	while (relation(last_open_node) == true || query(last_open_node) == true) {};
 	accept(LexicalAtom::rbracket, last_open_node);
 	parse_tree->print();
-	//delete skip_symbols;
 }
 
 
 /**
- * 
+ * <collectionType> ::= <collectionTypeIdentifier> ‘(‘ <type> ‘)’
  */
-bool Parser::OclExpressionPart2(Node *n)
+bool Parser::collectionType(Node *n)
 {
 	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (!collectionTypeIdentifier(n2))
+	{
+		delete n2; //no tragedy
+		return false;
+	}
+	accept(LexicalAtom::lparent, n2);
+	type(n2);
+	accept(LexicalAtom::rparent, n2);
+	n->addChild(n2);
+	return true;
+}
 
-	n->addChild(n2); //Ɛ
+
+/**
+ * <type> ::= <simpleName> <pathName2> | <collectionType> | <primitiveType> 
+ */
+bool Parser::type(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (accept(LexicalAtom::simpleName, n2))
+		pathName2(n2);
+	else 
+		if (!collectionType(n2))
+			if (!primitiveType(n2))
+			{
+				delete n2; //no tragedy
+				return false;
+			}
+	n->addChild(n2);
 	return true;
 }
 
@@ -94,7 +106,6 @@ bool Parser::OclExpressionPart1(Node *n)
 	n->addChild(n2); 
 	return true;
 }
-
 
 
 /**
@@ -176,7 +187,6 @@ bool Parser::OclExpressionPrim2(Node *n)
 	n->addChild(n2); // Ɛ
 	return true;
 }
-
 
 
 /**
