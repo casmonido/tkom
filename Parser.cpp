@@ -15,12 +15,15 @@ void Parser::Transformation()
 	accept(LexicalAtom::comma, last_open_node); 
 	modelDecl(last_open_node);
 	accept(LexicalAtom::rparent, last_open_node); 
-	accept(LexicalAtom::lbracket, last_open_node); 
-	std::list<LexicalAtom> *skip_list = new std::list<LexicalAtom>();
-	skip_list->push_back(LexicalAtom::querKw); //why i even do this
-	skip_list->push_back(LexicalAtom::topKw);
-	skip_list->push_back(LexicalAtom::relKw);
-	while (relation(last_open_node) == true || query(last_open_node) == true) {};
+	accept(LexicalAtom::lbracket, last_open_node);
+
+	std::list<LexicalAtom> *skip_list = new std::list<LexicalAtom>(); 
+	skip_list->push_back(LexicalAtom::querKw); 
+	skip_list->push_back(LexicalAtom::topKw); 
+	skip_list->push_back(LexicalAtom::relKw); 
+
+	while (relation(last_open_node, skip_list) || query(last_open_node, skip_list)) {}
+
 	accept(LexicalAtom::rbracket, last_open_node);
 	parse_tree->print();
 	delete skip_list;
@@ -856,29 +859,51 @@ bool Parser::where(Node *n)
  * <relation> ::= [‘top’] ‘relation’ <simpleName> 
  * ‘{‘ <varDeclaration>* (<domain> | <prmitiveTypeDomain>)+ [<when>] [<where>] ‘}’
  */
-bool Parser::relation(Node *n)
+bool Parser::relation(Node *n, std::list<LexicalAtom> *skip_list)
 {
 	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
-	accept(LexicalAtom::topKw, n2);
-	if (!accept(LexicalAtom::relKw, n2))
+
+	bool acc = accept(LexicalAtom::topKw, n2);
+	bool rel = accept(LexicalAtom::relKw, n2);
+	if (!acc && !rel)
 	{
 		delete n2; 
 		return false;
 	}
-	accept(LexicalAtom::simpleName, n2);
-	accept(LexicalAtom::lbracket, n2);
-	
+	n->addChild(n2); 
+	if (!rel)
+	{
+		skipToOneOfThese(skip_list);
+		return false;
+	}
+	if (!accept(LexicalAtom::simpleName, n2))
+	{
+		skipToOneOfThese(skip_list);
+		return false;
+	}
+	if (accept(LexicalAtom::lbracket, n2))
+	{
+		skipToOneOfThese(skip_list);
+		return false;
+	}
+
 	while (varDeclaration(n2)) {};
 
-	domain(n2);
-	primitiveTypeDomain(n2);
+	if (!domain(n2) && !primitiveTypeDomain(n2))
+	{
+		skipToOneOfThese(skip_list);
+		return false;
+	}
 
 	while (domain(n2) || primitiveTypeDomain(n2)) {};
 
 	when(n2);
 	where(n2);
-	accept(LexicalAtom::rbracket, n2);
-	n->addChild(n2); 
+	if (accept(LexicalAtom::rbracket, n2))
+	{
+		skipToOneOfThese(skip_list);
+		return false;
+	}
 	return true;
 }
 
@@ -886,7 +911,7 @@ bool Parser::relation(Node *n)
 /**
  * <query> ::= ‘query’ <simpleName> ‘(‘ [<para> (‘,’ <para>)*] ‘)’‘:’ <type> ‘{‘ (<OclExpression> ‘;’)* ‘}’
  */
-bool Parser::query(Node *n)
+bool Parser::query(Node *n, std::list<LexicalAtom> *skip_list)
 {
 	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
 	if (!accept(LexicalAtom::querKw, n2))

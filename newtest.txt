@@ -1,11 +1,9 @@
 transformation nazwa (X:X , X:X)
 {
 
-	cn, prefix: String;
-	
 	top relation ClassToTable
 	{
-
+		cn, prefix: String;
 	}
 
 	query() {}

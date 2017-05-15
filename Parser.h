@@ -74,8 +74,8 @@ class Parser
 	bool primitiveType(Node *);
 	bool BooleanLit(Node *);
 
-	bool relation(Node *);
-	bool query(Node *);
+	bool relation(Node *, std::list<LexicalAtom> *);
+	bool query(Node *,  std::list<LexicalAtom> *);
 	bool when(Node *);
 	bool where(Node *);
 	bool primitiveTypeDomain(Node *);
