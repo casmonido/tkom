@@ -21,6 +21,166 @@ void Parser::Transformation()
 }
 
 
+
+/**
+ * <realExpr2> ::= <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2> | Ɛ
+ */
+bool Parser::realExpr2(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (realOp(n2))
+	{
+		if (!accept(LexicalAtom::RealLit, n2))
+			if (!variable(n2))
+				realExpr(n2);
+		realExpr2(n2);
+	}
+	n->addChild(n2); //Ɛ
+	return true;
+}
+
+
+/**
+ * <realExpr> ::= <simpleName> <variable2> <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2>
+			| <RealLit> <realOp> (<variable> | <realExpr> | <RealLit>) <realExpr2>
+ */
+bool Parser::realExpr(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (accept(LexicalAtom::RealLit, n2))
+	{
+		realOp(n2);
+		if (!realExpr(n2))
+			if (!accept(LexicalAtom::RealLit, n2))
+				variable(n2);
+		realExpr2(n2);
+	}
+	else
+		if (accept(LexicalAtom::simpleName, n2))
+		{
+			variable2(n2);
+			accept(LexicalAtom::realOp, n2);
+			if (!realExpr(n2))
+				if (!accept(LexicalAtom::RealLit, n2))
+					variable(n2);
+			realExpr2(n2);
+		}
+		else
+		{
+			delete n2; 
+			return false;
+		}
+	n->addChild(n2);
+	return true;
+}  
+
+
+/**
+ * <intExpr2> ::= <arytmOp> (<variable> | <intExpr> | <IntegerLit>) <intExpr2> | Ɛ
+ */
+bool Parser::intExpr2(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (arytmOp(n2))
+	{
+		if (!accept(LexicalAtom::IntegerLit, n2))
+			if (!variable(n2))
+				intExpr(n2);
+		intExpr2(n2);
+	}
+	n->addChild(n2); //Ɛ
+	return true;
+}
+
+
+/**
+ * <intExpr> ::= <IntegerLit> <arytmOp> (<variable> | <intExpr> | <IntegerLit>) <intExpr2>
+			| <simpleName> <variable2> <arytmOp> (<variable> | <intExpr> | <IntegerLit>) <intExpr2>
+ */
+bool Parser::intExpr(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (accept(LexicalAtom::IntegerLit, n2))
+	{
+		arytmOp(n2);
+		if (!intExpr(n2))
+			if (!accept(LexicalAtom::IntegerLit, n2))
+				variable(n2);
+		intExpr2(n2);
+	}
+	else
+		if (accept(LexicalAtom::simpleName, n2))
+		{
+			variable2(n2);
+			accept(LexicalAtom::arytmOp, n2);
+			if (!intExpr(n2))
+				if (!accept(LexicalAtom::IntegerLit, n2))
+					variable(n2);
+			intExpr2(n2);
+		}
+		else
+		{
+			delete n2; 
+			return false;
+		}
+	n->addChild(n2);
+	return true;
+}
+
+
+/**
+ * <concatExpr2> ::= ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2> | Ɛ
+ */
+bool Parser::concatExpr2(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (accept(LexicalAtom::plusOp, n2))
+	{
+		if (!accept(LexicalAtom::StringLit, n2))
+			if (!variable(n2))
+				concatExpr(n2);
+		concatExpr2(n2);
+	}
+	n->addChild(n2); //Ɛ
+	return true;
+}
+
+
+/**
+ * <concatExpr> ::= <StringLit> ‘+’ (<concatExpr> | <StringLit> | <variable>)<concatExpr2>
+				| <simpleName> <variable2> ‘+’ (<concatExpr> | <StringLit> | <variable>) <concatExpr2>
+ */
+bool Parser::concatExpr(Node *n)
+{
+	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
+	if (accept(LexicalAtom::StringLit, n2))
+	{
+		accept(LexicalAtom::plusOp, n2);
+		if (!concatExpr(n2))
+			if (!accept(LexicalAtom::StringLit, n2))
+				variable(n2);
+		concatExpr2(n2);
+	}
+	else
+		if (accept(LexicalAtom::simpleName, n2))
+		{
+			variable2(n2);
+			accept(LexicalAtom::plusOp, n2);
+			if (!concatExpr(n2))
+				if (!accept(LexicalAtom::StringLit, n2))
+					variable(n2);
+			concatExpr2(n2);
+		}
+		else
+		{
+			delete n2; 
+			return false;
+		}
+	n->addChild(n2);
+	return true;
+}
+
+
 /**
  * <collectionType> ::= <collectionTypeIdentifier> ‘(‘ <type> ‘)’
  */
@@ -29,7 +189,7 @@ bool Parser::collectionType(Node *n)
 	Node *n2 = new Node(n, LexicalAtom::nonFinalSymbol); 
 	if (!collectionTypeIdentifier(n2))
 	{
-		delete n2; //no tragedy
+		delete n2; 
 		return false;
 	}
 	accept(LexicalAtom::lparent, n2);
@@ -52,7 +212,7 @@ bool Parser::type(Node *n)
 		if (!collectionType(n2))
 			if (!primitiveType(n2))
 			{
-				delete n2; //no tragedy
+				delete n2; 
 				return false;
 			}
 	n->addChild(n2);

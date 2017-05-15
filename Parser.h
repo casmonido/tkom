@@ -103,6 +103,14 @@ class Parser
 	bool OclExpression(Node *);
 
 
+	bool concatExpr(Node *);
+	bool concatExpr2(Node *);
+	bool intExpr(Node *);
+	bool intExpr2(Node *);
+	bool realExpr(Node *);
+	bool realExpr2(Node *);
+
+
 public:
 	Parser(Scan &s): scanner(s)
 	{ 
